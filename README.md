@@ -24,8 +24,9 @@ $ touch demoCA/index.txt
 ```
 $ openssl ecparam -out serverkey.pem -name prime256v1 -genkey
 $ openssl req -new -key serverkey.pem -sha256 -subj "/C=JP/ST=Tokyo/O=Server Ltd./OU=Server1/CN=server.com" -out servercsr.pem
-$ $ openssl ca -keyfile cakey.pem -cert cacert.pem -in servercsr.pem -out servercert.pem -days 3650 -config <(cat openssl.cnf <(printf "\n[usr_cert]\nsubjectAltName=DNS:server.com,DNS:foo.server.com"))
+$ openssl ca -keyfile cakey.pem -cert cacert.pem -in servercsr.pem -out servercert.pem -days 3650 -config <(cat openssl.cnf <(printf "\n[usr_cert]\nsubjectAltName=DNS:server.com,DNS:foo.server.com"))
 $ openssl pkcs8 -topk8 -inform PEM -outform DER -in serverkey.pem -nocrypt -out serverkey.pk8
+$ openssl pkcs12 -export -in servercert.pem -inkey serverkey.pem -out server.pk12
 ```
 
 同様にクライアント証明書を作成。
@@ -35,4 +36,5 @@ $ openssl ecparam -out clientkey.pem -name prime256v1 -genkey
 $ openssl req -new -key clientkey.pem -sha256 -subj "/C=JP/ST=Tokyo/O=Client Ltd./OU=Client1/CN=client.com" -out clientcsr.pem
 $ openssl ca -keyfile cakey.pem -cert cacert.pem -in clientcsr.pem -out clientcert.pem -days 3650 -config <(cat openssl.cnf <(printf "\n[usr_cert]\nsubjectAltName=DNS:client.com,DNS:bar.client.com"))
 $ openssl pkcs8 -topk8 -inform PEM -outform DER -in clientkey.pem -nocrypt -out clientkey.pk8
+$ openssl pkcs12 -export -in clientcert.pem -inkey clientkey.pem -out client.pk12
 ```
